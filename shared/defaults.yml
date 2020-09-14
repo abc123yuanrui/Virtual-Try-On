@@ -76,7 +76,7 @@ train:
   log_level: 1 # 0: no log, 1: only aggregated losses, >1 detailed losses
   print_freq: 1 #How often to print iteration 
   save_im_freq: 1000
-  resume_checkpoint: true
+  resume_checkpoint: false
   load_iter: 120000
   output_dir: '.'
 

@@ -23,7 +23,7 @@ class CPDataset(data.Dataset):
         self.dataroot = opt.data.files.base
 
         if opt.model.is_train:
-            self.datamode = "train"
+            self.datamode = "train-opt"
             self.data_list = opt.data.files.train
         else:
             self.datamode = "test"
@@ -103,7 +103,7 @@ class CPDataset(data.Dataset):
         # get cropped top img
         source = Image.open(osp.join(self.data_path, "image", im_name))
         mask = Image.fromarray(np.uint8(255 * parse_cloth)).convert("L")
-        blankImg = Image.new("RGB", (self.fine_height, self.fine_width), (255, 255, 255))
+        blankImg = Image.new("RGB", (self.fine_width, self.fine_height), (255, 255, 255))
 
         imgCropped = Image.composite(source, blankImg, mask)
         #imgCropped.show()
@@ -130,7 +130,7 @@ class CPDataset(data.Dataset):
         pose_name = im_name.replace('.jpg', '_keypoints.json')
         with open(osp.join(self.data_path, 'pose', pose_name), 'r') as f:
             pose_label = json.load(f)
-            pose_data = pose_label['people'][0]['pose_keypoints']
+            pose_data = pose_label[0]['keypoints']
             pose_data = np.array(pose_data)
             pose_data = pose_data.reshape((-1,3))
 
@@ -163,7 +163,7 @@ class CPDataset(data.Dataset):
 
         #just for visualization
         im_pose = self.transform(im_pose)
-
+        print('image shape:', imgCropped.size())
 
         result = {
             "c_name": c_name,  # for visualization

@@ -1,6 +1,6 @@
 import time
 from pathlib import Path
-from comet_ml import Experiment
+import comet_ml
 import sys
 import copy
 from models.SonderVITON import SonderFlowEstimator
@@ -12,7 +12,8 @@ from addict import Dict
 # from data import CreateDataLoader
 # from models import create_model
 # from util.visualizer import Visualizer
-
+COMET_API_KEY = "XDFR9dUZZYkdwlgAEUZwhSssr"
+comet_exp = comet_ml.Experiment(COMET_API_KEY)
 if __name__ == "__main__":
     root = Path(__file__).parent.resolve()
     opt_file = "shared/defaults.yml"
