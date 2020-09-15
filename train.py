@@ -3,11 +3,13 @@ from pathlib import Path
 import comet_ml
 import sys
 import copy
+import os
+import torch
 from models.SonderVITON import SonderFlowEstimator
 from utils import load_opts, Timer, set_mode
 from data.dataloader import get_loader
 from addict import Dict
-
+from models.base_model import save_networks
 
 # from data import CreateDataLoader
 # from models import create_model
@@ -58,4 +60,7 @@ if __name__ == "__main__":
 
                 if total_steps % opt.val.save_im_freq == 0:
                     model.save_test_images(test_display_images, total_steps)
-
+    if not os.path.exists(os.path.dirname(save_path)):
+        os.makedirs(os.path.dirname(save_path))
+    torch.save(model, save_path)
+    model.cuda()
