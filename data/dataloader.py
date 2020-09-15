@@ -98,7 +98,7 @@ class CPDataset(data.Dataset):
 
         parse_shape = (parse_array > 0).astype(np.float32)
 
-        parse_cloth = (parse_array == 126).astype(np.float32)
+        parse_cloth = (parse_array == 5).astype(np.float32)
 
         # get cropped top img
         source = Image.open(osp.join(self.data_path, "image", im_name))
@@ -106,8 +106,6 @@ class CPDataset(data.Dataset):
         blankImg = Image.new("RGB", (self.fine_width, self.fine_height), (255, 255, 255))
 
         imgCropped = Image.composite(source, blankImg, mask)
-        #imgCropped.show()
-        #mask.show()
         imgCropped = self.transform(imgCropped)  # [-1,1]
 
         # shape downsample
@@ -163,7 +161,6 @@ class CPDataset(data.Dataset):
 
         #just for visualization
         im_pose = self.transform(im_pose)
-        print('image shape:', imgCropped.size())
 
         result = {
             "c_name": c_name,  # for visualization

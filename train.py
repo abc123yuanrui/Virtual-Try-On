@@ -60,6 +60,7 @@ if __name__ == "__main__":
 
                 if total_steps % opt.val.save_im_freq == 0:
                     model.save_test_images(test_display_images, total_steps)
+    save_path = '/'
     if not os.path.exists(os.path.dirname(save_path)):
         os.makedirs(os.path.dirname(save_path))
     torch.save(model, save_path)
