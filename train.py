@@ -15,7 +15,9 @@ from models.base_model import save_networks
 # from models import create_model
 # from util.visualizer import Visualizer
 COMET_API_KEY = "XDFR9dUZZYkdwlgAEUZwhSssr"
-comet_exp = comet_ml.Experiment(COMET_API_KEY)
+project_name="VirtualTryon"
+workspace="abc123yuanrui"
+comet_exp = comet_ml.Experiment(COMET_API_KEY, project_name, workspace)
 if __name__ == "__main__":
     root = Path(__file__).parent.resolve()
     opt_file = "shared/defaults.yml"
