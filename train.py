@@ -9,15 +9,15 @@ from models.SonderVITON import SonderFlowEstimator
 from utils import load_opts, Timer, set_mode
 from data.dataloader import get_loader
 from addict import Dict
-from models.base_model import save_networks
 
-# from data import CreateDataLoader
-# from models import create_model
-# from util.visualizer import Visualizer
 COMET_API_KEY = "XDFR9dUZZYkdwlgAEUZwhSssr"
 project_name="VirtualTryon"
 workspace="abc123yuanrui"
 comet_exp = comet_ml.Experiment(COMET_API_KEY, project_name, workspace)
+# from data import CreateDataLoader
+# from models import create_model
+# from util.visualizer import Visualizer
+
 if __name__ == "__main__":
     root = Path(__file__).parent.resolve()
     opt_file = "shared/defaults.yml"
@@ -25,7 +25,7 @@ if __name__ == "__main__":
     opt = load_opts(path=root / opt_file)
 
     # Set up comet experiment:
-    comet_exp = Experiment(workspace=opt.comet.workspace, project_name=opt.comet.project_name)
+#     comet_exp = Experiment(workspace=opt.comet.workspace, project_name=opt.comet.project_name)
     if comet_exp is not None:
         comet_exp.log_asset(file_data=str(root / opt_file), file_name=root / opt_file)
         comet_exp.log_parameters(opt)
@@ -45,7 +45,10 @@ if __name__ == "__main__":
     model.setup()
 
     total_steps = 0
-
+    
+    save_path = "storage/checkpoints-clothflow"
+    if not os.path.exists(save_path):
+        os.makedirs(save_path)
     for epoch in range(opt.train.epochs):
         epoch_start_time = time.time()
         iter_data_time = time.time()
@@ -62,8 +65,10 @@ if __name__ == "__main__":
 
                 if total_steps % opt.val.save_im_freq == 0:
                     model.save_test_images(test_display_images, total_steps)
-    save_path = '/'
-    if not os.path.exists(os.path.dirname(save_path)):
-        os.makedirs(os.path.dirname(save_path))
-    torch.save(model, save_path)
+    
+        if epoch % 100 == 0:
+            torch.save(model.state_dict(), os.path.join(save_path,'epoch'+str(epoch)+'.pth'))
+            print("checkpoint saved!, epoch:", epoch)
+            
+    torch.save(model.state_dict(), os.path.join(save_path,'clothflow.pth'))
     model.cuda()
