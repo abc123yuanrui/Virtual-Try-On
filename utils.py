@@ -122,11 +122,11 @@ def prepare_sub_folder(output_directory):
     Returns:
         checkpoint_directory, image_directory-- checkpoints and images directories
     """
-    image_directory = os.path.join(output_directory, "images")
+    image_directory = os.path.join(output_directory, "result-clothflow")
     if not os.path.exists(image_directory):
         print("Creating directory: {}".format(image_directory))
         os.makedirs(image_directory)
-    checkpoint_directory = os.path.join(output_directory, "checkpoints")
+    checkpoint_directory = os.path.join(output_directory, "checkpoints-clothflow")
     if not os.path.exists(checkpoint_directory):
         print("Creating directory: {}".format(checkpoint_directory))
         os.makedirs(checkpoint_directory)

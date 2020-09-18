@@ -26,7 +26,7 @@ class CPDataset(data.Dataset):
             self.datamode = "train-opt"
             self.data_list = opt.data.files.train
         else:
-            self.datamode = "test"
+            self.datamode = "test-end2end"
             self.data_list = opt.data.files.test
 
 
@@ -102,10 +102,13 @@ class CPDataset(data.Dataset):
 
         # get cropped top img
         source = Image.open(osp.join(self.data_path, "image", im_name))
+        im_ref = self.transform(source)
         mask = Image.fromarray(np.uint8(255 * parse_cloth)).convert("L")
         blankImg = Image.new("RGB", (self.fine_width, self.fine_height), (255, 255, 255))
 
         imgCropped = Image.composite(source, blankImg, mask)
+        #imgCropped.show()
+        #mask.show()
         imgCropped = self.transform(imgCropped)  # [-1,1]
 
         # shape downsample
@@ -161,7 +164,6 @@ class CPDataset(data.Dataset):
 
         #just for visualization
         im_pose = self.transform(im_pose)
-
         result = {
             "c_name": c_name,  # for visualization
             "im_name": im_name,  # for visualization or ground truth
@@ -172,6 +174,7 @@ class CPDataset(data.Dataset):
             "image": imgCropped,  # for visualization
             "parse_cloth": pcm,  # was im_c  # for ground truth
             "shape": shape,  # for visualization
+            "im_ref": im_ref,
         }
 
         return Dict(result)

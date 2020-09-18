@@ -71,6 +71,7 @@ class SonderFlowEstimator(BaseModel):
         self.parse_cloth = input.parse_cloth.to(self.device)
         self.cloth_name = input.c_name
         self.im_name = input.im_name
+        self.im_ref = input.im_ref.to(self.device)
 
     def forward(self):
         # Input args: c_s, s_s, s_t
@@ -93,7 +94,6 @@ class SonderFlowEstimator(BaseModel):
         # )
 
         self.loss_G_struct = l1_loss(self.warped_mask, self.parse_cloth)
-
         self.loss_G_perc = self.criterionVGG(
             self.warped_cloth * self.warped_mask, self.image * self.parse_cloth
         )
@@ -127,7 +127,6 @@ class SonderFlowEstimator(BaseModel):
 
     def backward_D(self):
         # Real
-
         real_mask_d = torch.cat([self.cloth, self.parse_cloth, self.image], dim=1)
         fake_mask_d = torch.cat([self.cloth, self.parse_cloth, self.warped_cloth], dim=1)
 
@@ -184,13 +183,13 @@ class SonderFlowEstimator(BaseModel):
 
             self.set_input(Dict(test_display_data[i]))
             self.test()
-
+            overlay = 0.5 * self.warped_cloth * self.warped_mask[0] + 0.5 * self.im_ref
             save_images.append(self.cloth[0])
             save_images.append(self.mask[0].repeat(3, 1, 1))
             save_images.append(self.image[0])
             save_images.append(self.parse_cloth[0].repeat(3, 1, 1))
             save_images.append(self.warped_cloth[0] * self.warped_mask[0])
-            save_images.append(self.warped_mask[0].repeat(3, 1, 1))
+            save_images.append(overlay[0])
 
         write_images(
             save_images,
@@ -199,3 +198,5 @@ class SonderFlowEstimator(BaseModel):
             comet_exp=self.comet_exp,
             store_im=self.store_image,
         )
+    def save_checkpoints(self, epoch, path):
+        BaseModel.save_networks(self, epoch, path)
