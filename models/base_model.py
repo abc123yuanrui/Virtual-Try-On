@@ -25,7 +25,7 @@ class BaseModel:
         self.loss_names = []
         self.model_names = []
         self.comet_exp = opt.comet_exp
-        self.save_dir = opt.train.output_dir + "/checkpoints"
+        self.save_dir = opt.train.output_dir + "/checkpoints-clothflow"
 
     def set_input(self, input):
         pass
@@ -62,12 +62,12 @@ class BaseModel:
         pass
 
     # save models to the disk
-    def save_networks(self, epoch):
+    def save_networks(self, epoch, path):
         print("save models")  # TODO: save checkpoints
         for name in self.model_names:
             if isinstance(name, str):
                 save_filename = "%s_net_%s.pth" % (epoch, name)
-                save_path = os.path.join(self.save_dir, save_filename)
+                save_path = os.path.join(path, save_filename)
                 net = getattr(self, "net" + name)
 
                 if self.use_gpu and torch.cuda.is_available():

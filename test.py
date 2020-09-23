@@ -1,4 +1,5 @@
 import time
+import comet_ml
 from pathlib import Path
 from comet_ml import Experiment
 import sys
@@ -7,7 +8,10 @@ from utils import *
 from data.dataloader import get_loader
 import copy
 
-
+COMET_API_KEY = "XDFR9dUZZYkdwlgAEUZwhSssr"
+project_name="VirtualTryon"
+workspace="abc123yuanrui"
+comet_exp = comet_ml.Experiment(COMET_API_KEY, project_name, workspace)
 # from data import CreateDataLoader
 # from models import create_model
 # from util.visualizer import Visualizer
@@ -25,7 +29,6 @@ if __name__ == "__main__":
 
     print("#testing images = %d" % dataset_size)
 
-    comet_exp = Experiment(workspace=opt.comet.workspace, project_name=opt.comet.project_name)
     if comet_exp is not None:
         comet_exp.log_asset(file_data=str(root / opt_file), file_name=root / opt_file)
         comet_exp.log_parameters(opt)
@@ -44,5 +47,6 @@ if __name__ == "__main__":
         with Timer("Elapsed time in update " + str(i) + ": %f"):
             total_steps += opt.data.loaders.batch_size
             model.set_input(Dict(data))
-            print(Dict(data).data.keys())
+            
+#             print(Dict(data).data.keys())
             model.save_test_images([Dict(data)], total_steps)

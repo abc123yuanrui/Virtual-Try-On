@@ -46,7 +46,7 @@ if __name__ == "__main__":
 
     total_steps = 0
     
-    save_path = "storage/checkpoints-clothflow"
+    save_path = "/checkpoints-clothflow"
     if not os.path.exists(save_path):
         os.makedirs(save_path)
     for epoch in range(opt.train.epochs):
@@ -66,9 +66,9 @@ if __name__ == "__main__":
                 if total_steps % opt.val.save_im_freq == 0:
                     model.save_test_images(test_display_images, total_steps)
     
-        if epoch % 100 == 0:
-            torch.save(model.state_dict(), os.path.join(save_path,'epoch'+str(epoch)+'.pth'))
+        if epoch % 4 == 0:
+            model.save_checkpoints(epoch, save_path)
             print("checkpoint saved!, epoch:", epoch)
             
-    torch.save(model.state_dict(), os.path.join(save_path,'clothflow.pth'))
+    model.save_checkpoints(self, epoch, save_path)
     model.cuda()
